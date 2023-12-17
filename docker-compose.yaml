@@ -1,0 +1,69 @@
+version: "3.9"
+services:
+  reverse-proxy:
+    build: ./reverse_proxy/dev
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - self-hosting
+    depends_on:
+      - registry
+      - vaultwarden
+      - vikunja-frontend
+    volumes:
+      -  ./data/caddy:/data
+    env_file: ./secrets_dev.env
+    restart: always
+
+  registry:
+    image: registry:latest
+    expose:
+      - 5000
+    networks:
+      - self-hosting
+    volumes:
+      -  ./data/registry:/var/lib/registry
+    restart: always
+
+  vaultwarden:
+    image: vaultwarden/server:latest
+    expose:
+      - 80
+    networks:
+      - self-hosting
+    volumes:
+      -  ./data/vaultwarden:/data
+    restart: always
+
+  vikunja-api:
+    image: vikunja/api
+    restart: always
+    env_file: ./secrets_dev.env
+    volumes:
+      - ./data/vikunja/files:/app/vikunja/files
+    depends_on:
+      - vikunja-db
+    networks:
+      - self-hosting
+  vikunja-db:
+    image: mariadb:10
+    restart: always
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    env_file: ./secrets_dev.env
+    volumes:
+      - ./data/vikunja/db:/var/lib/mysql
+    networks:
+      - self-hosting
+  vikunja-frontend:
+    image: vikunja/frontend
+    restart: always
+    depends_on:
+      - vikunja-api
+    env_file: ./secrets_dev.env
+    networks:
+      - self-hosting
+
+networks:
+  self-hosting:
+    name: self-hosting-network

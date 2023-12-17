@@ -1,0 +1,31 @@
+registry.your_domain {
+    tls {
+        dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+    }
+
+    reverse_proxy registry:5000
+}
+
+vaultwarden.your_domain {
+    tls {
+        dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+    }
+
+    reverse_proxy vaultwarden:80
+}
+
+vikunja.your_domain {
+    tls {
+        dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+    }
+
+    reverse_proxy vikunja-frontend:80
+}
+
+vikunjaapis.your_domain {
+    tls {
+        dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+    }
+
+    reverse_proxy vikunja-api:3456
+}
