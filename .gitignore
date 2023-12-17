@@ -3,3 +3,4 @@ secrets_*.env
 reverse_proxy/*
 
 !reverse_proxy/template
+!secrets_template.env
