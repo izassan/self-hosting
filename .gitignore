@@ -1,2 +1,5 @@
 data
 secrets_*.env
+reverse_proxy/*
+
+!reverse_proxy/template
